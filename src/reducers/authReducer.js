@@ -17,13 +17,6 @@ const AuthReducer = (initState = authInitialState, action) => {
                 isLoading: true,
             }
 
-        case Auth.USER_LOGIN_CURRENT_USER_REQUEST:
-            return {
-                ...initState,
-                isLoading: true,
-            }
-
-
         case Auth.USER_LOGIN_SUCCESS:
             return {
                 ...initState,
@@ -39,6 +32,31 @@ const AuthReducer = (initState = authInitialState, action) => {
                 error: action.payload || null,
                 isLoggedIn: false
             }
+//      Register 
+
+case Auth.USER_REGISGTER_REQUEST:
+            return {
+                ...initState,
+                isLoading: true,
+            }
+
+        case Auth.USER_REGISGTER_SUCCESS:
+            return {
+                ...initState,
+                user: action.payload,
+                isLoggedIn: true,
+                isLoading: false,
+            }
+
+        case Auth.USER_REGISGTER_ERROR:
+            return {
+                ...initState,
+                isLoading: false,
+                error: action.payload || null,
+                isLoggedIn: false
+            }
+            
+            //USER LOG OUT
         case Auth.USER_LOGOUT_SUCCESS:
             return {
                 ...initState,
