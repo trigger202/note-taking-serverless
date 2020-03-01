@@ -23,7 +23,7 @@ const Singup = props => {
       <form onSubmit={handleSubmit}>
         <h3>Sign up</h3>
         <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
+          <ControlLabel>Email/Username</ControlLabel>
           <FormControl
             autoFocus
             type="email"
@@ -46,7 +46,7 @@ const Singup = props => {
           isLoading={props.isLoading}
           disabled={!validateForm()}
         >
-          Login
+          Sing up
         </LoaderButton>
       </form>
     </div>
