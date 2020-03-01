@@ -6,7 +6,15 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 import config from './config';
-window.LOG_LEVEL = 'DEBUG'
+// window.LOG_LEVEL = 'DEBUG'
+
+import { createStore, applyMiddleware, compose } from "redux";
+import rootReducers from './reducers'
+import thunkMiddleware from 'redux-thunk'
+import logger from "./middleware/logger";
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk';
+
 
 Amplify.configure({
     Auth: {
@@ -32,10 +40,56 @@ Amplify.configure({
         ]
     }
 });
+
+
+const middlewareEnhancer = applyMiddleware(thunk, logger, thunkMiddleware);
+const composedEnhancers = compose(
+    middlewareEnhancer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
+
+// const loadState = () => {
+//     try {
+//         const serializedState = localStorage.getItem('state');
+//         if (serializedState === null) {
+//             return undefined;
+//         }
+//         return JSON.parse(serializedState);
+//     } catch (e) {
+//         return undefined;
+//     }
+// };
+
+// const saveState = (state) => {
+//     console.log("saving state")
+//     try {
+//         const serializedState = JSON.stringify(state);
+//         localStorage.setItem('state', serializedState);
+//     } catch (e) {
+//         // Ignore write errors;
+//     }
+// };
+
+// const peristedState = loadState();
+
+
+
+
+const appStore = createStore(
+    rootReducers,
+    undefined,
+    composedEnhancers
+);
+// appStore.subscribe(() => {
+//     saveState(appStore.getState());
+// });
+
 ReactDOM.render(
 
     <Router>
-        <App />
+        <Provider store={appStore} >
+            <App />
+        </Provider>
     </Router>,
     document.getElementById('root'));
 

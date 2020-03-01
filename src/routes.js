@@ -4,14 +4,18 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from './containers/Login'
 import Singup from "./containers/Singup";
+import Notes from "./containers/Notes";
+import NewNote from "./containers/NewNote";
 
-export default function Routes() {
+export default function Routes({ appProps }) {
     return (
         <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Singup} />
+            <Route path="/signup" exact component={Singup} />
+            <Route path="/notes/new" exact component={NewNote} />
             <Route component={NotFound} />
         </Switch>
     );
-}
+} 

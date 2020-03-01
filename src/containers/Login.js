@@ -1,30 +1,21 @@
 import React, { useState } from "react";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
-import { Auth } from "aws-amplify";
+import { connect } from 'react-redux';
+import { doUserLoginCall } from "../actions/Auth";
+import LoaderButton from "../components/LoaderButton";
+import "../components/LoaderButton.css";
 
-export default function Login(props) {
+const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     function validateForm() {
-        return email.length > 0 && password.length > 0;
-
+        return email.length > 0 && password.length > 5;
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
-
-        console.log("email", email);
-        console.log("password", password);
-        ///user cognito login 
-
-        try {
-            await Auth.signIn(email, password);
-            alert("Logged in");
-        } catch (e) {
-            alert(e.message);
-        }
-
+        await props.doLoginUser({ email: email, password: password });
     }
 
     return (
@@ -47,10 +38,32 @@ export default function Login(props) {
                         type="password"
                     />
                 </FormGroup>
-                <Button block bsSize="large" disabled={!validateForm()} type="submit">
+                <LoaderButton
+                    block
+                    type="submit"
+                    bsSize="large"
+                    isLoading={props.isLoading}
+                    disabled={!validateForm()}
+                >
                     Login
-        </Button>
+</LoaderButton>
             </form>
         </div>
     );
+
+
 }
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth,
+        isLoading: state.auth.isLoading,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        doLoginUser: payload => dispatch(doUserLoginCall(payload)),
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
