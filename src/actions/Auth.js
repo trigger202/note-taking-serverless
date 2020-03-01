@@ -37,8 +37,6 @@ export const userLoginError = (payload) => {
     }
 }
 
-
-
 export const UserLogOutRequest = (payload) => {
     return {
         type: Auth.USER_LOGOUT_SUCCESS,
@@ -62,22 +60,19 @@ export const currentUserSession = () => {
         try {
             awsAuth.currentSession()
                 .then(res => {
-                    console.log('res', res);
-                    console.log('res', res.CognitoUserSession);
-                    dispatch(userLoginSuccess(res))
+                    return dispatch(userLoginSuccess(res))
                 })
 
-                .catch(err => console.log('current session error', err));
+                .catch(err => {
+                    return dispatch(userLoginError(err));
+                });
         }
-        catch (e) {
-            if (e !== 'No current user') {
-                alert(e);
+        catch (err) {
+            if (err !== 'No current user') {
+                alert(err);
             }
-
-            dispatch(userLoginError(e));
+            return dispatch(userLoginError(err));
         }
-        dispatch(userLoginError("Failed to re-authenticate user"))
-
     }
 }
 

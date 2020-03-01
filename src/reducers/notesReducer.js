@@ -4,6 +4,7 @@ const initialNotesState = {
     count: 0,
     noteItems: [],
     error: null,
+    isLoading: false,
 }
 
 const notesReducer = (initState = initialNotesState, action) => {
@@ -13,32 +14,38 @@ const notesReducer = (initState = initialNotesState, action) => {
         case Note.GET_NOTES_REQUEST:
             return {
                 ...initState,
+                isLoading: true,
             }
         case Note.GET_NOTES_SUCCESS:
             return {
                 ...initState,
-                noteItems: action.payload
+                noteItems: action.payload,
+                isLoading: false,
             }
 
         case Note.GET_NOTES_ERROR:
             return {
                 ...initState,
-                error: action.payload
+                error: action.payload,
+                isLoading: false,
             }
         //create note
         case Note.CREATE_NOTE_REQUEST:
             return {
                 ...initState,
+                isLoading: true,
             }
         case Note.CREATE_NOTE_SUCCESS:
             return {
                 ...initState,
-                noteItems: [...initState.noteItems, action.payload]
+                noteItems: [...initState.noteItems, action.payload],
+                isLoading: false,
             }
 
         case Note.CREATE_NOTE_ERROR:
             return {
                 ...initState,
+                isLoading: false,
             }
         default:
             console.log("getting innital state");

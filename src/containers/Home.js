@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { ListGroupItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Home.css";
@@ -8,7 +8,6 @@ import { doGetNotes } from "../actions/Note";
 
 
 const Home = props => {
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         async function onLoad() {
@@ -20,18 +19,16 @@ const Home = props => {
                 return;
             }
 
-            setIsLoading(true);
             try {
-                const notes = await props.getNotes();
+                await props.getNotes();
             } catch (e) {
                 alert(e);
             }
-
-            setIsLoading(false);
         }
 
         onLoad();
-    }, [props.isAuthenticated]);
+
+    });
 
 
     function renderNotesList() {
@@ -40,6 +37,7 @@ const Home = props => {
         if (notes.length < 1) {
             return
         }
+
         return notes.map((note, i) =>
             i !== 0 ? (
                 <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
@@ -70,6 +68,15 @@ const Home = props => {
 
     return (
         <div className="Home">
+
+            {
+                props.isLoading ?
+                    <LoaderButton
+                        block
+                        bsSize="large"
+                        isLoading={props.isLoading}
+                    >loading...</LoaderButton> : ''
+            }
             {props.isAuthenticated ? renderNotesList() : renderLander()}
         </div>
     );
@@ -77,9 +84,9 @@ const Home = props => {
 
 const mapStateToProps = (state) => {
     return {
-        auth: state.auth,
         isAuthenticated: state.auth.isLoggedIn,
         notes: state.notes.noteItems,
+        isLoading: state.notes.isLoading,
     }
 }
 

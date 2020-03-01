@@ -10,12 +10,8 @@ import history from "./utils/history";
 
 function App(props) {
   useEffect(() => {
-    onLoad();
-  }, []);
-
-  async function onLoad() {
-    await props.authenticate();
-  }
+    props.authenticate();
+  });
 
   async function handleLogout() {
     await props.doUserLogOut();
@@ -63,7 +59,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mapStateToProps = (state) => {
-  console.log('state', state.auth);
   return {
     isAuthenticated: state.auth.isLoggedIn,
   }

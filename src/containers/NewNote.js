@@ -5,12 +5,11 @@ import config from "../config";
 import "./Notes.css";
 import { doCreateNote } from "../actions/Note";
 import { connect } from 'react-redux';
+import { s3Upload } from "../libs/awsLib";
 
 const NewNote = (props) => {
-    console.log(props);
     const file = useRef(null);
     const [content, setContent] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
 
     function validateForm() {
         return content.length > 0;
@@ -30,10 +29,14 @@ const NewNote = (props) => {
             );
             return;
         }
-        setIsLoading(true);
-        console.log(await props.doCreateNote({ 'content': content, 'file': file }));
-        setIsLoading(true);
-
+        try {
+            const attachment = file.current
+                ? await s3Upload(file.current)
+                : null;
+            await props.doCreateNote({ 'content': content, 'attachment': attachment });
+        } catch (err) {
+            alert("Failed to crate note", err);
+        }
     }
 
     return (
@@ -55,7 +58,7 @@ const NewNote = (props) => {
                     type="submit"
                     bsSize="large"
                     bsStyle="primary"
-                    isLoading={isLoading}
+                    isLoading={props.isLoading}
                     disabled={!validateForm()}
                 >
                     Create
@@ -68,7 +71,8 @@ const NewNote = (props) => {
 const mapStateToProps = (state) => {
     return {
         auth: state.auth,
-        isLoggedIn: state.auth.isLoggedIn
+        isLoggedIn: state.auth.isLoggedIn,
+        isLoading: state.notes.isLoading,
     }
 }
 

@@ -1,4 +1,5 @@
 import { API } from "aws-amplify";
+import history from "../utils/history";
 
 const Note = {
 
@@ -48,10 +49,11 @@ export const doCreateNote = payload => {
                 body: payload,
             })
             .then(res => {
-                return dispatch(createNoteSuccess(payload));
+                dispatch(createNoteSuccess(payload));
+                history.push("/");
             })
             .catch(err => {
-                return dispatch(createNoteError(err));
+                dispatch(createNoteError(err));
             })
     }
 }
@@ -84,7 +86,6 @@ export const doGetNotes = () => {
         dispatch(getNotesRequest());
         API.get("notes", "/notes")
             .then(res => {
-                console.log('get notes', res)
                 return dispatch(getNotesRequestSuccess(res));
             })
             .catch(err => {

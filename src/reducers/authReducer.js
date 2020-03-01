@@ -10,12 +10,17 @@ const authInitialState = {
 };
 
 const AuthReducer = (initState = authInitialState, action) => {
-    // console.log('aciton ', action);
     switch (action.type) {
         case Auth.USER_LOGIN_REQUEST:
             return {
                 ...initState,
-                isLoading: true
+                isLoading: true,
+            }
+
+        case Auth.USER_LOGIN_CURRENT_USER_REQUEST:
+            return {
+                ...initState,
+                isLoading: true,
             }
 
 
@@ -24,6 +29,7 @@ const AuthReducer = (initState = authInitialState, action) => {
                 ...initState,
                 user: action.payload,
                 isLoggedIn: true,
+                isLoading: false,
             }
 
         case Auth.USER_LOGIN_ERROR:
@@ -31,12 +37,14 @@ const AuthReducer = (initState = authInitialState, action) => {
                 ...initState,
                 isLoading: false,
                 error: action.payload || null,
+                isLoggedIn: false
             }
         case Auth.USER_LOGOUT_SUCCESS:
             return {
                 ...initState,
                 isLoggedIn: false,
                 user: null,
+                isLoading: false,
             }
         default:
             return initState;
