@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { Link, Router } from "react-router-dom";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import "./App.css";
@@ -11,7 +11,7 @@ import history from "./utils/history";
 function App(props) {
   useEffect(() => {
     props.authenticate();
-  });
+  }, []);
 
   async function handleLogout() {
     await props.doUserLogOut();
@@ -20,7 +20,6 @@ function App(props) {
   return (
     <div className="App container">
       <Router history={history}>
-
         <Navbar fluid collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
@@ -30,9 +29,10 @@ function App(props) {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              {isAuthenticated
-                ? <NavItem onClick={handleLogout}>Logout</NavItem>
-                : <>
+              {isAuthenticated ? (
+                <NavItem onClick={handleLogout}>Logout</NavItem>
+              ) : (
+                <>
                   <LinkContainer to="/signup">
                     <NavItem>Signup</NavItem>
                   </LinkContainer>
@@ -40,13 +40,12 @@ function App(props) {
                     <NavItem>Login</NavItem>
                   </LinkContainer>
                 </>
-              }
+              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
         <Routes />
       </Router>
-
     </div>
   );
 }
@@ -54,14 +53,14 @@ function App(props) {
 const mapDispatchToProps = dispatch => {
   return {
     authenticate: payload => dispatch(currentUserSession(payload)),
-    doUserLogOut: payload => dispatch(doUserLogOut()),
-  }
-}
+    doUserLogOut: payload => dispatch(doUserLogOut())
+  };
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.isLoggedIn,
-  }
+    isAuthenticated: state.auth.isLoggedIn
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

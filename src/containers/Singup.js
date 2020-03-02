@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { doUserRegister } from "../actions/Auth";
 import LoaderButton from "../components/LoaderButton";
 import "../components/LoaderButton.css";
-import { Auth } from "aws-amplify";
 
 const Singup = props => {
   const [email, setEmail] = useState("");
@@ -16,12 +15,7 @@ const Singup = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const code = "764020";
-    const result = await Auth.confirmSignUp(email, code)
-      .then(res => console.log(res))
-      .catch(err => console.log("err", err));
-    console.log("result", result);
-    // await props.doUserRegistration({ username: email, password: password });
+    await props.doUserRegistration({ username: email, password: password });
   }
   //51f073de-c5d3-47df-824b-c02afeec891b
   //alifareh@gmail.com
@@ -54,7 +48,7 @@ const Singup = props => {
           isLoading={props.isLoading}
           disabled={!validateForm()}
         >
-          Sing up
+          Sign up
         </LoaderButton>
       </form>
     </div>

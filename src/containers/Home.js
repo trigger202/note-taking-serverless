@@ -7,10 +7,11 @@ import { connect } from "react-redux";
 import { doGetNotes } from "../actions/Note";
 
 const Home = props => {
-  console.log("props", props);
+  console.log("=====home props ======", props);
   useEffect(() => {
     async function onLoad() {
       if (!props.isAuthenticated) {
+        console.log("not authed");
         return;
       }
 
@@ -26,13 +27,21 @@ const Home = props => {
     }
 
     onLoad();
-  }, [props.notes]);
+  }, [props.isAuthenticated]);
 
   function renderNotesList() {
     const { notes } = props;
 
     if (notes.length < 1) {
-      return;
+      return (
+        <LinkContainer key="new" to="/notes/new">
+          <ListGroupItem>
+            <h4>
+              <b>{"\uFF0B"}</b> Create a new note
+            </h4>
+          </ListGroupItem>
+        </LinkContainer>
+      );
     }
 
     return notes.map((note, i) =>

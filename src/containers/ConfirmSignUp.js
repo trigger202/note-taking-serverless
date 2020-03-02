@@ -1,28 +1,28 @@
 import React, { useState } from "react";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import "./Login.css";
 import { connect } from "react-redux";
-import { doUserLoginCall } from "../actions/Auth";
+import { doConfirmSignUp } from "../actions/Auth";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import "../components/LoaderButton.css";
 
-const Login = props => {
+const ConfirmSignUp = props => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  function validateForm() {
-    return email.length > 0 && password.length > 5;
-  }
+  const [code, setCode] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
-    await props.doLoginUser({ email: email, password: password });
+    console.log("code", code);
+    await props.doConfirmSignUp({ username: email, code: code });
+  }
+  function validateForm() {
+    return email.length > 0 && code.length > 5;
   }
 
   return (
     <div className="Login">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
+        <h3>Confirm Sign Up</h3>
+        <FormGroup bsSize="large">
+          <ControlLabel>Email/Username</ControlLabel>
           <FormControl
             autoFocus
             type="email"
@@ -30,12 +30,12 @@ const Login = props => {
             onChange={e => setEmail(e.target.value)}
           />
         </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <ControlLabel>Password</ControlLabel>
+        <FormGroup bsSize="large">
+          <ControlLabel>Code</ControlLabel>
           <FormControl
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            type="password"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            type="text"
           />
         </FormGroup>
         <LoaderButton
@@ -45,7 +45,7 @@ const Login = props => {
           isLoading={props.isLoading}
           disabled={!validateForm()}
         >
-          Login
+          Sign up
         </LoaderButton>
       </form>
     </div>
@@ -55,13 +55,15 @@ const Login = props => {
 const mapStateToProps = state => {
   return {
     auth: state.auth,
-    isLoading: state.auth.isLoading
+    isLoading: state.auth.isLoading,
+    isLoggedIn: state.auth.isLoggedIn
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    doLoginUser: payload => dispatch(doUserLoginCall(payload))
+    doConfirmSignUp: payload => dispatch(doConfirmSignUp(payload))
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmSignUp);

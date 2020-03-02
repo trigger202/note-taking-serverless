@@ -16,7 +16,11 @@ const Auth = {
   // register
   USER_REGISTER_REQUEST: "USER_REGISTER_REQUEST",
   USER_REGISTER_SUCCESS: "USER_REGISTER_SUCCESS",
-  USER_REGISTER_ERROR: "USER_LOGIN_ERROR"
+  USER_REGISTER_ERROR: "USER_LOGIN_ERROR",
+
+  USER_CONFIRM_SIGNUP_REQUEST: "USER_CONFIRM_SIGNUP_REQUEST",
+  USER_CONFIRM_SIGNUP_SUCCESS: "USER_CONFIRM_SIGNUP_SUCCESS",
+  USER_CONFIRM_SIGNUP_ERROR: "USER_CONFIRM_SIGNUP_REQUEST"
 };
 
 export default Auth;
@@ -142,6 +146,45 @@ export const doUserRegister = payload => {
       .catch(err => {
         console.log("register error", err);
         dispatch(userRegisterError(err));
+      });
+  };
+};
+
+export const userConfirmSingUpRequest = () => {
+  return {
+    type: Auth.USER_CONFIRM_SIGNUP_REQUEST
+  };
+};
+export const userConfirmSingUpSuccess = payload => {
+  return {
+    type: Auth.USER_CONFIRM_SIGNUP_SUCCESS,
+    payload: payload
+  };
+};
+
+export const userConfirmSingUpError = payload => {
+  return {
+    type: Auth.USER_CONFIRM_SIGNUP_ERROR,
+    payload: payload
+  };
+};
+
+export const doConfirmSignUp = payload => {
+  console.log("payload", payload);
+  const { email, code } = payload;
+  const username = email;
+  return dispatch => {
+    dispatch(userConfirmSingUpRequest);
+
+    awsAuth
+      .confirmSignUp(username, code)
+      .then(res => {
+        console.log("", res);
+        dispatch(userConfirmSingUpSuccess(res));
+      })
+      .catch(err => {
+        console.log("confirm sign up error", err);
+        dispatch(userConfirmSingUpError(err));
       });
   };
 };
